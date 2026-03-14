@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GRASP AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── THEME VARIABLES ── */
+:root {
+  --bg:#07070f;
+  --sidebar:#0e0e1a;
+  --surface:#111120;
+  --surface2:#181830;
+  --border:#1f1f38;
+  --border2:#2a2a48;
+  --accent:#3b82f6;
+  --accent-glow:rgba(59,130,246,0.25);
+  --accent2:#8b5cf6;
+  --green:#10b981;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --text:#e8e8f8;
+  --text2:#a0a0c0;
+  --muted:#505070;
+  --radius:12px;
+  --sidebar-w:260px;
+}
+
+body.theme-light {
+  --bg:#f0f2f8;
+  --sidebar:#ffffff;
+  --surface:#ffffff;
+  --surface2:#f0f2f8;
+  --border:#e0e0f0;
+  --border2:#d0d0e8;
+  --text:#1a1a2e;
+  --text2:#4a4a6a;
+  --muted:#9090b0;
+}
+
+body {
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  display:flex;
+  overflow:hidden;
+  transition:background 0.3s, color 0.3s;
+}
+
+/* ══════════════════════════════
+   LOGIN SCREEN
+══════════════════════════════ */
+#login-screen {
+  position:fixed;
+  inset:0;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.login-card {
+  width:100%;
+  max-width:400px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:40px 36px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.5);
+}
+
+.login-logo {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:32px;
+  justify-content:center;
+}
+
+.login-icon {
+  width:48px;height:48px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 0 30px var(--accent-glow);
+}
+
+.login-title {
+  font-size:26px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.login-card h2 {
+  font-size:20px;font-weight:600;
+  margin-bottom:6px;text-align:center;
+}
+
+.login-card p {
+  font-size:13px;color:var(--text2);
+  margin-bottom:28px;text-align:center;
+}
+
+.login-tabs {
+  display:flex;
+  background:var(--surface2);
+  border-radius:10px;
+  padding:4px;
+  margin-bottom:24px;
+  gap:4px;
+}
+
+.login-tab {
+  flex:1;padding:8px;
+  border:none;background:transparent;
+  color:var(--text2);font-family:'Outfit',sans-serif;
+  font-size:13px;font-weight:500;
+  border-radius:7px;cursor:pointer;
+  transition:all 0.2s;
+}
+
+.login-tab.active {
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+
+.form-group {
+  margin-bottom:16px;
+}
+
+.form-group label {
+  display:block;
+  font-size:12px;font-weight:500;
+  color:var(--text2);
+  margin-bottom:6px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.form-group input {
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:9px;
+  padding:11px 14px;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
+}
+
+.form-group input::placeholder{color:var(--muted)}
+
+.btn-primary {
+  width:100%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;
+  border-radius:10px;
+  padding:12px;
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-size:15px;font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  margin-top:8px;
+  box-shadow:0 0 20px var(--accent-glow);
+}
+
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 30px var(--accent-glow)}
+
+.login-divider {
+  display:flex;align-items:center;
+  gap:12px;margin:20px 0;
+  color:var(--muted);font-size:12px;
+}
+.login-divider::before,.login-divider::after{
+  content:'';flex:1;height:1px;background:var(--border2);
+}
+
+.btn-social {
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:11px;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:8px;
+}
+.btn-social:hover{border-color:var(--accent);background:var(--surface)}
+
+.login-footer {
+  text-align:center;
+  font-size:12px;color:var(--muted);
+  margin-top:20px;
+}
+.login-footer a{color:var(--accent);text-decoration:none}
+
+/* ══════════════════════════════
+   SIDEBAR
+══════════════════════════════ */
+#sidebar {
+  width:var(--sidebar-w);
+  background:var(--sidebar);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  transition:width 0.3s ease, background 0.3s;
+  overflow:hidden;
+  position:relative;
+  z-index:10;
+}
+
+#sidebar.collapsed { width:60px; }
+
+/* Brand */
+.sidebar-brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:16px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+
+.brand-icon {
+  width:34px;height:34px;
+  border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+  box-shadow:0 0 16px var(--accent-glow);
+}
+
+.brand-name {
+  font-size:17px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  white-space:nowrap;overflow:hidden;
+}
+
+.collapse-btn {
+  margin-left:auto;
+  background:none;border:none;
+  color:var(--muted);cursor:pointer;
+  padding:4px;border-radius:6px;
+  transition:all 0.2s;flex-shrink:0;
+  font-size:16px;
+}
+.collapse-btn:hover{color:var(--text);background:var(--surface2)}
+
+/* New Chat button */
+.new-chat-btn {
+  margin:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;
+  border-radius:10px;
+  padding:10px 14px;
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  transition:all 0.2s;
+  white-space:nowrap;overflow:hidden;
+  box-shadow:0 0 16px var(--accent-glow);
+  flex-shrink:0;
+}
+.new-chat-btn:hover{transform:translateY(-1px);box-shadow:0 0 24px var(--accent-glow)}
+.new-chat-btn span{font-size:16px;flex-shrink:0}
+
+/* Search box */
+.sidebar-search {
+  margin:0 12px 8px;
+  position:relative;
+  flex-shrink:0;
+}
+
+.sidebar-search input {
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:8px 10px 8px 32px;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:12px;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.sidebar-search input:focus{border-color:var(--accent)}
+.sidebar-search input::placeholder{color:var(--muted)}
+.sidebar-search::before{
+  content:'🔍';
+  position:absolute;left:9px;top:50%;
+  transform:translateY(-50%);
+  font-size:11px;pointer-events:none;
+}
+
+/* Section labels */
+.sidebar-section-label {
+  padding:8px 14px 4px;
+  font-size:10px;font-weight:600;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  white-space:nowrap;overflow:hidden;
+  flex-shrink:0;
+}
+
+/* Chat history list */
+#chat-history-list {
+  flex:1;
+  overflow-y:auto;
+  padding:0 8px;
+}
+
+#chat-history-list::-webkit-scrollbar{width:3px}
+#chat-history-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.chat-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 10px;
+  border-radius:9px;
+  cursor:pointer;
+  transition:all 0.15s;
+  margin-bottom:2px;
+  position:relative;
+}
+.chat-item:hover{background:var(--surface2)}
+.chat-item.active{background:var(--surface2);border:1px solid var(--border2)}
+
+.chat-item-icon{font-size:14px;flex-shrink:0}
+
+.chat-item-info{flex:1;overflow:hidden}
+.chat-item-title{
+  font-size:13px;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--text);
+}
+.chat-item-time{font-size:10px;color:var(--muted);margin-top:1px}
+
+.chat-item-del {
+  opacity:0;background:none;border:none;
+  color:var(--muted);cursor:pointer;
+  padding:3px;border-radius:5px;
+  transition:all 0.15s;font-size:12px;
+  flex-shrink:0;
+}
+.chat-item:hover .chat-item-del{opacity:1}
+.chat-item-del:hover{color:var(--red);background:rgba(239,68,68,0.1)}
+
+/* Sidebar nav bottom */
+.sidebar-nav {
+  border-top:1px solid var(--border);
+  padding:8px;
+  flex-shrink:0;
+}
+
+.nav-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 10px;
+  border-radius:9px;
+  cursor:pointer;
+  transition:all 0.15s;
+  margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;
+  border:none;background:none;
+  color:var(--text2);
+  font-family:'Outfit',sans-serif;
+  font-size:13px;font-weight:500;
+  width:100%;text-align:left;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.danger:hover{background:rgba(239,68,68,0.1);color:var(--red)}
+
+.nav-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+
+/* User profile strip */
+.user-strip {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-top:1px solid var(--border);
+  cursor:pointer;
+  transition:background 0.15s;
+  flex-shrink:0;
+}
+.user-strip:hover{background:var(--surface2)}
+
+.user-avatar {
+  width:32px;height:32px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+  flex-shrink:0;
+}
+
+.user-info{flex:1;overflow:hidden}
+.user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-plan{font-size:10px;color:var(--muted)}
+
+.user-more{color:var(--muted);font-size:14px;flex-shrink:0}
+
+/* ══════════════════════════════
+   MAIN CHAT AREA
+══════════════════════════════ */
+#main {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg);
+  transition:background 0.3s;
+}
+
+/* Top bar */
+.topbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 20px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  background:var(--bg);
+}
+
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text)}
+.topbar-sub{font-size:11px;color:var(--muted)}
+
+.topbar-right{display:flex;align-items:center;gap:8px}
+
+.icon-btn {
+  width:34px;height:34px;
+  border-radius:8px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--text2);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;
+  transition:all 0.15s;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+
+/* Chat messages */
+#chat-window {
+  flex:1;
+  overflow-y:auto;
+  padding:24px 20px;
+  display:flex;flex-direction:column;gap:16px;
+  scroll-behavior:smooth;
+}
+#chat-window::-webkit-scrollbar{width:4px}
+#chat-window::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* Welcome */
+.welcome {
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  flex:1;padding:48px 24px;gap:14px;
+  animation:fadeIn 0.5s ease;
+}
+.welcome-orb{
+  width:68px;height:68px;border-radius:18px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  box-shadow:0 0 40px var(--accent-glow);
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.welcome h2{font-size:26px;font-weight:700;color:var(--text)}
+.welcome p{font-size:14px;color:var(--text2);max-width:400px;line-height:1.6}
+
+.suggestion-chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  justify-content:center;margin-top:10px;
+}
+.chip{
+  padding:8px 16px;
+  border:1px solid var(--border2);
+  border-radius:20px;
+  font-size:12px;color:var(--text2);
+  cursor:pointer;background:var(--surface);
+  transition:all 0.15s;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+
+/* Message rows */
+.message-row{
+  display:flex;gap:11px;
+  max-width:800px;width:100%;
+  margin:0 auto;
+  animation:msgIn 0.2s ease;
+}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.message-row.user{flex-direction:row-reverse}
+
+.av{
+  width:30px;height:30px;
+  border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;margin-top:2px;
+}
+.av.ai{background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 10px var(--accent-glow)}
+.av.usr{background:var(--surface2);border:1px solid var(--border2)}
+
+.msg-wrap{display:flex;flex-direction:column;gap:4px;max-width:calc(100% - 42px)}
+
+.msg-time{font-size:10px;color:var(--muted);padding:0 4px}
+.message-row.user .msg-time{text-align:right}
+
+.bubble{
+  padding:11px 15px;
+  border-radius:12px;
+  font-size:14px;line-height:1.75;
+  word-break:break-word;
+}
+.message-row.ai .bubble{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-top-left-radius:3px;
+  color:var(--text);
+}
+.message-row.user .bubble{
+  background:var(--surface2);
+  border:1px solid rgba(59,130,246,0.25);
+  border-top-right-radius:3px;
+}
+.bubble pre{
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:12px;margin:8px 0;
+  overflow-x:auto;
+  font-size:12px;
+  font-family:'JetBrains Mono',monospace;
+  line-height:1.6;
+}
+.bubble code{
+  background:rgba(59,130,246,0.12);
+  border-radius:4px;padding:1px 5px;
+  font-size:12px;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--accent);
+}
+.bubble pre code{background:none;padding:0;color:inherit}
+
+/* Typing */
+.typing-wrap{display:flex;gap:11px;max-width:800px;width:100%;margin:0 auto}
+.typing-dots{
+  display:flex;gap:4px;
+  padding:13px 16px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;border-top-left-radius:3px;
+  align-items:center;
+}
+.typing-dots span{
+  width:6px;height:6px;
+  background:var(--accent);border-radius:50%;
+  animation:tdot 1.2s infinite;opacity:0.4;
+}
+.typing-dots span:nth-child(2){animation-delay:0.2s}
+.typing-dots span:nth-child(3){animation-delay:0.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* Input area */
+.input-area{
+  padding:12px 20px 16px;
+  border-top:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;
+}
+.input-box{
+  max-width:800px;margin:0 auto;
+  display:flex;gap:10px;align-items:flex-end;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:13px;
+  padding:10px 12px;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.input-box:focus-within{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
+}
+#user-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:14px;
+  resize:none;max-height:120px;line-height:1.6;
+}
+#user-input::placeholder{color:var(--muted)}
+
+.send-btn{
+  width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all 0.15s;
+  box-shadow:0 0 14px var(--accent-glow);
+}
+.send-btn:hover{transform:scale(1.07)}
+.send-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+.send-btn svg{width:16px;height:16px;fill:#fff}
+
+.input-hint{
+  max-width:800px;margin:6px auto 0;
+  font-size:11px;color:var(--muted);
+  display:flex;justify-content:space-between;
+}
+
+/* ══════════════════════════════
+   MODALS (Settings / Profile)
+══════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(4px);
+  z-index:500;
+  display:none;
+  align-items:center;justify-content:center;
+}
+.modal-overlay.open{display:flex}
+
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:18px;
+  width:100%;max-width:480px;
+  max-height:85vh;overflow-y:auto;
+  padding:28px;
+  animation:fadeIn 0.2s ease;
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{
+  background:none;border:none;color:var(--muted);
+  font-size:20px;cursor:pointer;
+  padding:4px;border-radius:6px;transition:all 0.15s;
+}
+.modal-close:hover{color:var(--text);background:var(--surface2)}
+
+.settings-section{margin-bottom:24px}
+.settings-section-title{
+  font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--muted);margin-bottom:12px;
+}
+
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:8px;
+}
+.setting-info .setting-name{font-size:14px;font-weight:500}
+.setting-info .setting-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Toggle switch */
+.toggle{
+  position:relative;
+  width:40px;height:22px;
+  flex-shrink:0;
+}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:var(--border2);border-radius:22px;
+  cursor:pointer;transition:background 0.2s;
+}
+.toggle-slider::before{
+  content:'';
+  position:absolute;
+  width:16px;height:16px;
+  left:3px;bottom:3px;
+  background:#fff;border-radius:50%;
+  transition:transform 0.2s;
+}
+.toggle input:checked + .toggle-slider{background:var(--accent)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(18px)}
+
+/* Theme picker */
+.theme-options{display:flex;gap:8px;flex-wrap:wrap}
+.theme-opt{
+  padding:7px 14px;
+  border:1px solid var(--border2);
+  border-radius:8px;
+  font-size:12px;color:var(--text2);
+  cursor:pointer;background:var(--surface2);
+  transition:all 0.15s;
+}
+.theme-opt:hover,.theme-opt.active{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-glow);
+}
+
+/* Plan badge */
+.plan-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:20px;
+  font-size:11px;font-weight:600;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+}
+
+/* Collapsed sidebar labels */
+#sidebar.collapsed .brand-name,
+#sidebar.collapsed .new-chat-btn span:last-child,
+#sidebar.collapsed .sidebar-search,
+#sidebar.collapsed .sidebar-section-label,
+#sidebar.collapsed .chat-item-info,
+#sidebar.collapsed .chat-item-del,
+#sidebar.collapsed .nav-item span:last-child,
+#sidebar.collapsed .user-info,
+#sidebar.collapsed .user-more
+{ display:none }
+
+#sidebar.collapsed .new-chat-btn{
+  padding:10px;justify-content:center;
+}
+#sidebar.collapsed .chat-item{padding:10px;justify-content:center}
+#sidebar.collapsed .nav-item{padding:10px;justify-content:center}
+#sidebar.collapsed .user-strip{padding:10px;justify-content:center}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     LOGIN SCREEN
+     PURPOSE: Authenticate users before they access the AI.
+     Contains email/password login, registration tab, and social login (Google/GitHub).
+     In production: connect to your auth backend (Firebase, Supabase, JWT etc.)
+══════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-icon">⚡</div>
+      <span class="login-title">GRASP AI</span>
+    </div>
+    <h2>Welcome back</h2>
+    <p>Sign in to continue your conversations</p>
+
+    <!-- Login / Register tabs -->
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('login',this)">Sign In</button>
+      <button class="login-tab" onclick="switchTab('register',this)">Create Account</button>
+    </div>
+
+    <div id="login-form">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com" id="login-email"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••" id="login-pass"/>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign In →</button>
+
+      <div class="login-divider">or continue with</div>
+      <button class="btn-social" onclick="doLogin()">🌐 Continue with Google</button>
+      <button class="btn-social" onclick="doLogin()">🐙 Continue with GitHub</button>
+
+      <div class="login-footer">
+        Forgot your password? <a href="#">Reset it</a>
+      </div>
+    </div>
+
+    <div id="register-form" style="display:none">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" placeholder="Create a password"/>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Create Account →</button>
+      <div class="login-footer" style="margin-top:14px">
+        By signing up you agree to our <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SIDEBAR
+══════════════════════════════ -->
+<div id="sidebar">
+
+  <!-- 1. BRAND + COLLAPSE BUTTON
+       The logo/name at the top. The collapse button (≡) lets users
+       shrink the sidebar to icon-only mode to save screen space. -->
+  <div class="sidebar-brand">
+    <div class="brand-icon">⚡</div>
+    <span class="brand-name">GRASP AI</span>
+    <button class="collapse-btn" onclick="toggleSidebar()" title="Collapse sidebar">☰</button>
+  </div>
+
+  <!-- 2. NEW CHAT BUTTON
+       The most-clicked button in any chat AI. Creates a blank conversation.
+       Every major AI (ChatGPT, Claude, Gemini) has this at the top of the sidebar. -->
+  <button class="new-chat-btn" onclick="newChat()">
+    <span>✏️</span>
+    <span>New Chat</span>
+  </button>
+
+  <!-- 3. SEARCH BOX
+       Lets users search through all their past conversations by keyword.
+       Essential when users have 50+ chats and need to find a specific one fast. -->
+  <div class="sidebar-search">
+    <input type="text" placeholder="Search conversations..." id="search-input" oninput="filterChats(this.value)"/>
+  </div>
+
+  <!-- 4. CHAT HISTORY
+       Lists all previous conversations. Each item shows:
+       - Title (auto-generated from first message)
+       - Timestamp (Today, Yesterday, or date)
+       - Delete button (hover to reveal)
+       Clicking a chat restores that full conversation.
+       In production: store in a database (PostgreSQL, MongoDB, etc.) per user. -->
+  <div class="sidebar-section-label">Recent Chats</div>
+
+  <div id="chat-history-list">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- 5. SIDEBAR NAVIGATION (bottom actions)
+       Fixed nav items at the bottom of the sidebar. Standard in all chat AIs:
+       - Explore / Discover  → find templates, featured prompts, plugins
+       - Knowledge Base      → manage uploaded documents for RAG
+       - Upgrade / Plan      → subscription upsell (Free → Pro → Enterprise)
+       - Settings            → opens settings modal
+       - Help & Support      → FAQ, docs, contact support
+       - Sign Out            → logs the user out, clears session -->
+  <div style="flex:1"></div>
+  <div class="sidebar-nav">
+
+    <button class="nav-item" onclick="openModal('explore-modal')">
+      <span class="nav-icon">🧭</span>
+      <span>Explore</span>
+    </button>
+
+    <button class="nav-item" onclick="openModal('kb-modal')">
+      <span class="nav-icon">📚</span>
+      <span>Knowledge Base</span>
+    </button>
+
+    <button class="nav-item" onclick="openModal('upgrade-modal')">
+      <span class="nav-icon">⚡</span>
+      <span>Upgrade Plan</span>
+    </button>
+
+    <button class="nav-item" onclick="openModal('settings-modal')">
+      <span class="nav-icon">⚙️</span>
+      <span>Settings</span>
+    </button>
+
+    <button class="nav-item" onclick="openModal('help-modal')">
+      <span class="nav-icon">❓</span>
+      <span>Help & Support</span>
+    </button>
+
+    <button class="nav-item danger" onclick="doLogout()">
+      <span class="nav-icon">🚪</span>
+      <span>Sign Out</span>
+    </button>
+  </div>
+
+  <!-- 6. USER PROFILE STRIP
+       Shows the logged-in user's avatar, name, and plan at the very bottom.
+       Clicking opens the profile/account modal.
+       This is a universal pattern across ChatGPT, Claude, Notion, Linear, etc. -->
+  <div class="user-strip" onclick="openModal('profile-modal')">
+    <div class="user-avatar" id="user-avatar-text">J</div>
+    <div class="user-info">
+      <div class="user-name" id="user-display-name">John Doe</div>
+      <div class="user-plan">Free Plan · 50 msgs/day</div>
+    </div>
+    <div class="user-more">⋯</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MAIN AREA
+══════════════════════════════ -->
+<div id="main">
+
+  <!-- Top bar: shows current chat title + action buttons -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="topbar-title" id="current-chat-title">New Conversation</div>
+        <div class="topbar-sub" id="current-chat-sub">GRASP AI · Ready</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" title="Share conversation" onclick="alert('Share link copied!')">🔗</button>
+      <button class="icon-btn" title="Export chat" onclick="exportChat()">⬇️</button>
+      <button class="icon-btn" title="Toggle theme" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+
+  <!-- Chat window -->
+  <div id="chat-window">
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-orb">⚡</div>
+      <h2>Good day! I'm GRASP AI</h2>
+      <p>Your intelligent assistant. Ask me anything — coding, writing, analysis, math, or just a conversation.</p>
+      <div class="suggestion-chips">
+        <div class="chip" onclick="useChip(this)">📝 Help me write an email</div>
+        <div class="chip" onclick="useChip(this)">💻 Explain a coding concept</div>
+        <div class="chip" onclick="useChip(this)">🧠 Brainstorm ideas</div>
+        <div class="chip" onclick="useChip(this)">📊 Analyze some data</div>
+        <div class="chip" onclick="useChip(this)">🌍 Translate text</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input area -->
+  <div class="input-area">
+    <div class="input-box">
+      <textarea id="user-input" placeholder="Message GRASP AI…" rows="1"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+    <div class="input-hint">
+      <span>Enter to send · Shift+Enter for new line</span>
+      <span id="msg-counter" style="color:var(--muted)"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     MODALS
+══════════════════════════════ -->
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⚙️ Settings</span>
+      <button class="modal-close" onclick="closeModal('settings-modal')">✕</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Appearance</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Theme</div>
+          <div class="setting-desc">Choose your interface color mode</div>
+        </div>
+        <div class="theme-options">
+          <div class="theme-opt active" onclick="setTheme('dark',this)">🌑 Dark</div>
+          <div class="theme-opt" onclick="setTheme('light',this)">☀️ Light</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Chat Behavior</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Stream responses</div>
+          <div class="setting-desc">Show reply word by word as it's generated</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Auto-title chats</div>
+          <div class="setting-desc">Automatically name conversations from context</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Save chat history</div>
+          <div class="setting-desc">Store conversations for future reference</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Sentiment detection</div>
+          <div class="setting-desc">AI adjusts tone based on your emotional state</div>
+        </div>
+        <label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Privacy</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-name">Improve AI with my chats</div>
+          <div class="setting-desc">Allow anonymized data for model training</div>
+        </div>
+        <label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label>
+      </div>
+      <div class="setting-row" style="cursor:pointer" onclick="if(confirm('Delete ALL chat history? This cannot be undone.')) alert('History cleared.')">
+        <div class="setting-info">
+          <div class="setting-name" style="color:var(--red)">Delete all chat history</div>
+          <div class="setting-desc">Permanently remove all conversations</div>
+        </div>
+        <span style="color:var(--muted)">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profile-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">👤 My Profile</span>
+      <button class="modal-close" onclick="closeModal('profile-modal')">✕</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:16px;background:var(--surface2);border-radius:12px;border:1px solid var(--border2)">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff" id="profile-avatar">J</div>
+      <div>
+        <div style="font-size:16px;font-weight:600" id="profile-name">John Doe</div>
+        <div style="font-size:12px;color:var(--muted)" id="profile-email">john@example.com</div>
+        <div style="margin-top:6px"><span class="plan-badge">⚡ Free Plan</span></div>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">Account Details</div>
+      <div class="form-group"><label>Full Name</label><input type="text" value="John Doe"/></div>
+      <div class="form-group"><label>Email</label><input type="email" value="john@example.com"/></div>
+      <button class="btn-primary" style="margin-top:4px" onclick="alert('Profile saved!')">Save Changes</button>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">Security</div>
+      <div class="setting-row" style="cursor:pointer" onclick="alert('Password reset email sent!')">
+        <div class="setting-info"><div class="setting-name">Change Password</div><div class="setting-desc">Send a password reset email</div></div>
+        <span style="color:var(--muted)">→</span>
+      </div>
+      <div class="setting-row" style="cursor:pointer" onclick="alert('2FA setup coming soon!')">
+        <div class="setting-info"><div class="setting-name">Two-Factor Authentication</div><div class="setting-desc">Add an extra layer of security</div></div>
+        <span style="color:var(--muted)">→</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⚡ Upgrade Your Plan</span>
+      <button class="modal-close" onclick="closeModal('upgrade-modal')">✕</button>
+    </div>
+    <div style="display:grid;gap:12px">
+      <div style="padding:20px;border:2px solid var(--border2);border-radius:12px">
+        <div style="font-size:16px;font-weight:700">Free</div>
+        <div style="font-size:28px;font-weight:700;margin:8px 0">$0<span style="font-size:13px;color:var(--muted)">/mo</span></div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8">✓ 50 messages/day<br>✓ GPT-4 class model<br>✓ Chat history (30 days)<br>✗ No file uploads<br>✗ No API access</div>
+        <button class="btn-primary" style="margin-top:14px;opacity:0.5;cursor:default">Current Plan</button>
+      </div>
+      <div style="padding:20px;border:2px solid var(--accent);border-radius:12px;background:var(--accent-glow)">
+        <div style="font-size:16px;font-weight:700;color:var(--accent)">Pro ⭐</div>
+        <div style="font-size:28px;font-weight:700;margin:8px 0">$20<span style="font-size:13px;color:var(--muted)">/mo</span></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">✓ Unlimited messages<br>✓ Latest model access<br>✓ File & image uploads<br>✓ Unlimited chat history<br>✓ Priority support</div>
+        <button class="btn-primary" style="margin-top:14px" onclick="alert('Redirecting to checkout...')">Upgrade to Pro →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KNOWLEDGE BASE MODAL -->
+<div class="modal-overlay" id="kb-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📚 Knowledge Base</span>
+      <button class="modal-close" onclick="closeModal('kb-modal')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6">Upload your own documents (.txt files). GRASP AI will read them and use them to answer your questions accurately — this is called RAG (Retrieval Augmented Generation).</p>
+    <div style="border:2px dashed var(--border2);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'" onclick="document.getElementById('kb-file').click()">
+      <div style="font-size:32px;margin-bottom:8px">📄</div>
+      <div style="font-size:14px;font-weight:500">Drop .txt files here or click to upload</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Your FAQs, product manuals, policies, etc.</div>
+      <input type="file" id="kb-file" accept=".txt" style="display:none" onchange="uploadKB(this)"/>
+    </div>
+    <div id="kb-file-list" style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+      <div style="font-size:12px;color:var(--muted)">No files uploaded yet</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPLORE MODAL -->
+<div class="modal-overlay" id="explore-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🧭 Explore</span>
+      <button class="modal-close" onclick="closeModal('explore-modal')">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px">Start with a ready-made prompt template.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${[['💼','Business Email','Write a professional email for any situation'],['🐛','Debug Code','Paste code + error → get a fix'],['📊','Data Analysis','Describe your data, get insights'],['✍️','Content Writer','Blog posts, social media, ads'],['🌍','Translator','Translate text into any language'],['📋','Summarizer','Paste any text, get a clean summary']].map(([e,t,d])=>`
+      <div style="padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'" onclick="useTemplate('${t}')">
+        <div style="font-size:22px;margin-bottom:6px">${e}</div>
+        <div style="font-size:13px;font-weight:600">${t}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">${d}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="help-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">❓ Help & Support</span>
+      <button class="modal-close" onclick="closeModal('help-modal')">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${[['📖','Documentation','Read the full guide on using GRASP AI'],['💬','Community Forum','Ask questions, share tips with other users'],['🐛','Report a Bug','Found something broken? Let us know'],['✉️','Contact Support','Email us at support@graspai.com'],['🔄','What\'s New','See the latest features and updates']].map(([e,t,d])=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'" onclick="alert('Opening ${t}...')">
+        <span style="font-size:20px">${e}</span>
+        <div><div style="font-size:13px;font-weight:600">${t}</div><div style="font-size:11px;color:var(--muted)">${d}</div></div>
+        <span style="margin-left:auto;color:var(--muted)">→</span>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:10px;text-align:center">
+      <div style="font-size:12px;color:var(--muted)">GRASP AI v2.0.0 · Built with ❤️</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+let currentUser = null;
+let chatHistory = JSON.parse(localStorage.getItem('grasp_chats') || '[]');
+let activeChat = null;
+let isLoading = false;
+const SESSION_ID = 'session_' + Date.now();
+
+// ── Login ──────────────────────────────────────────────────────
+function switchTab(tab, el) {
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email')?.value || 'john@example.com';
+  const name = email.split('@')[0].replace(/\./g,' ').replace(/\b\w/g,c=>c.toUpperCase()) || 'User';
+  currentUser = { name, email, plan: 'Free' };
+  document.getElementById('user-display-name').textContent = name;
+  document.getElementById('user-avatar-text').textContent = name[0].toUpperCase();
+  document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
+  document.getElementById('profile-name').textContent = name;
+  document.getElementById('profile-email').textContent = email;
+  document.getElementById('login-screen').style.display = 'none';
+  renderChatHistory();
+}
+
+function doLogout() {
+  if (!confirm('Sign out?')) return;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// ── Sidebar ────────────────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// ── Chat History ───────────────────────────────────────────────
+function renderChatHistory(filter = '') {
+  const list = document.getElementById('chat-history-list');
+  const filtered = chatHistory.filter(c => c.title.toLowerCase().includes(filter.toLowerCase()));
+  if (filtered.length === 0) {
+    list.innerHTML = `<div style="padding:12px 10px;font-size:12px;color:var(--muted)">No conversations yet</div>`;
+    return;
+  }
+  const now = new Date();
+  list.innerHTML = filtered.map(chat => {
+    const d = new Date(chat.timestamp);
+    const diff = now - d;
+    const label = diff < 86400000 ? 'Today' : diff < 172800000 ? 'Yesterday' : d.toLocaleDateString();
+    return `
+    <div class="chat-item ${chat.id === activeChat ? 'active' : ''}" onclick="loadChat('${chat.id}')">
+      <span class="chat-item-icon">💬</span>
+      <div class="chat-item-info">
+        <div class="chat-item-title">${chat.title}</div>
+        <div class="chat-item-time">${label}</div>
+      </div>
+      <button class="chat-item-del" onclick="event.stopPropagation();deleteChat('${chat.id}')" title="Delete">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function filterChats(val) { renderChatHistory(val); }
+
+function saveChat(title, messages) {
+  const id = 'chat_' + Date.now();
+  const chat = { id, title, messages, timestamp: Date.now() };
+  chatHistory.unshift(chat);
+  localStorage.setItem('grasp_chats', JSON.stringify(chatHistory));
+  activeChat = id;
+  renderChatHistory();
+  return id;
+}
+
+function loadChat(id) {
+  const chat = chatHistory.find(c => c.id === id);
+  if (!chat) return;
+  activeChat = id;
+  document.getElementById('current-chat-title').textContent = chat.title;
+  const win = document.getElementById('chat-window');
+  win.innerHTML = '';
+  chat.messages.forEach(m => appendMessage(m.role, m.text, {}, false));
+  renderChatHistory();
+}
+
+function deleteChat(id) {
+  chatHistory = chatHistory.filter(c => c.id !== id);
+  localStorage.setItem('grasp_chats', JSON.stringify(chatHistory));
+  if (activeChat === id) { activeChat = null; newChat(); }
+  else renderChatHistory();
+}
+
+function newChat() {
+  activeChat = null;
+  document.getElementById('current-chat-title').textContent = 'New Conversation';
+  document.getElementById('current-chat-sub').textContent = 'GRASP AI · Ready';
+  document.getElementById('chat-window').innerHTML = `
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-orb">⚡</div>
+      <h2>Good day! I'm GRASP AI</h2>
+      <p>Your intelligent assistant. Ask me anything.</p>
+      <div class="suggestion-chips">
+        <div class="chip" onclick="useChip(this)">📝 Help me write an email</div>
+        <div class="chip" onclick="useChip(this)">💻 Explain a coding concept</div>
+        <div class="chip" onclick="useChip(this)">🧠 Brainstorm ideas</div>
+        <div class="chip" onclick="useChip(this)">📊 Analyze some data</div>
+        <div class="chip" onclick="useChip(this)">🌍 Translate text</div>
+      </div>
+    </div>`;
+  renderChatHistory();
+}
+
+// ── Messaging ──────────────────────────────────────────────────
+let conversationHistory = [];
+
+function appendMessage(role, text, meta = {}, save = true) {
+  document.getElementById('welcome-screen')?.remove();
+  const row = document.createElement('div');
+  row.className = `message-row ${role}`;
+  const av = document.createElement('div');
+  av.className = `av ${role === 'ai' ? 'ai' : 'usr'}`;
+  av.textContent = role === 'ai' ? '⚡' : currentUser?.name?.[0]?.toUpperCase() || '👤';
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap';
+  const time = document.createElement('div');
+  time.className = 'msg-time';
+  time.textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = formatText(text);
+  wrap.appendChild(time);
+  wrap.appendChild(bubble);
+  row.appendChild(av);
+  row.appendChild(wrap);
+  const win = document.getElementById('chat-window');
+  win.appendChild(row);
+  win.scrollTop = win.scrollHeight;
+
+  if (save) {
+    conversationHistory.push({ role, text });
+    if (conversationHistory.length === 2) {
+      const title = conversationHistory[0].text.slice(0, 42) + (conversationHistory[0].text.length > 42 ? '…' : '');
+      document.getElementById('current-chat-title').textContent = title;
+      activeChat = saveChat(title, [...conversationHistory]);
+    } else if (activeChat) {
+      const chat = chatHistory.find(c => c.id === activeChat);
+      if (chat) { chat.messages = [...conversationHistory]; localStorage.setItem('grasp_chats', JSON.stringify(chatHistory)); }
+    }
+  }
+}
+
+function showTyping() {
+  document.getElementById('welcome-screen')?.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'typing-wrap'; wrap.id = 'typing-wrap';
+  const av = document.createElement('div');
+  av.className = 'av ai'; av.textContent = '⚡';
+  const dots = document.createElement('div'); dots.className = 'typing-dots';
+  dots.innerHTML = '<span></span><span></span><span></span>';
+  wrap.appendChild(av); wrap.appendChild(dots);
+  const win = document.getElementById('chat-window');
+  win.appendChild(wrap);
+  win.scrollTop = win.scrollHeight;
+}
+function removeTyping() { document.getElementById('typing-wrap')?.remove(); }
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const msg = input.value.trim();
+  if (!msg || isLoading) return;
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  input.value = ''; input.style.height = 'auto';
+  appendMessage('user', msg);
+  showTyping();
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ message: msg, session_id: SESSION_ID })
+    });
+    const data = await res.json();
+    removeTyping();
+    if (data.reply) appendMessage('ai', data.reply, { sentiment: data.sentiment });
+    else appendMessage('ai', '⚠️ Something went wrong. Please try again.');
+  } catch(e) {
+    removeTyping();
+    appendMessage('ai', '⚠️ Cannot reach the server. Make sure **app.py** is running:\n```\npython app.py\n```');
+  }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+function formatText(t) {
+  return t
+    .replace(/```(\w*)\n?([\s\S]*?)```/g,'<pre><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br>');
+}
+
+// ── Modals ────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
+});
+
+// ── Theme ─────────────────────────────────────────────────────
+function toggleTheme() {
+  document.body.classList.toggle('theme-light');
+  const btn = document.querySelector('.topbar-right .icon-btn:nth-child(3)');
+  btn.textContent = document.body.classList.contains('theme-light') ? '🌑' : '🌙';
+}
+function setTheme(t, el) {
+  document.querySelectorAll('.theme-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  document.body.classList.toggle('theme-light', t==='light');
+}
+
+// ── Misc ──────────────────────────────────────────────────────
+function useChip(el) { document.getElementById('user-input').value = el.textContent.slice(2); document.getElementById('user-input').focus(); }
+function useTemplate(t) { closeModal('explore-modal'); document.getElementById('user-input').value = t + ': '; document.getElementById('user-input').focus(); }
+function exportChat() {
+  const msgs = Array.from(document.querySelectorAll('.bubble')).map(b=>b.innerText).join('\n---\n');
+  const blob = new Blob([msgs],{type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'grasp-chat.txt'; a.click();
+}
+async function uploadKB(input) {
+  const file = input.files[0]; if(!file) return;
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    const res = await fetch('/upload-knowledge',{method:'POST',body:fd});
+    const data = await res.json();
+    if(data.status==='uploaded') {
+      const list = document.getElementById('kb-file-list');
+      if(list.querySelector('div[style]')) list.innerHTML = '';
+      list.innerHTML += `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;font-size:12px"><span>📄</span><span style="flex:1">${data.file}</span><span style="color:var(--muted)">${data.chunks} chunks</span></div>`;
+      appendMessage('ai', `✅ **Knowledge file uploaded!**\n\nFile: \`${data.file}\` · ${data.chunks} chunks loaded.\nI'll now use this document to answer relevant questions.`);
+    }
+  } catch(e) { alert('Upload failed — make sure server is running'); }
+  input.value = '';
+}
+
+// Input auto-resize + keyboard
+const ui = document.getElementById('user-input');
+ui.addEventListener('input', () => { ui.style.height='auto'; ui.style.height=Math.min(ui.scrollHeight,120)+'px'; });
+ui.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
+</script>
+</body>
+</html>
